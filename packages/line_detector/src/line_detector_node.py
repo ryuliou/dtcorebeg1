@@ -157,6 +157,11 @@ class LineDetectorNode(DTROS):
             color: self.detector.detectLines(ranges) for color, ranges in list(self.color_ranges.items())
         }
 
+        detections_objects = {bounding_boxes: detections.bounding_boxes for bds in list(detections.items())}
+       
+
+       
+
         # Construct a SegmentList
         segment_list = SegmentList()
         segment_list.header.stamp = image_msg.header.stamp

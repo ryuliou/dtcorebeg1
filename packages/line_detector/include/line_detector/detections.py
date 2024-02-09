@@ -4,7 +4,7 @@ class Detections:
     by :py:class:`LineDetector`.
     """
 
-    def __init__(self, lines, normals, centers, map):
+    def __init__(self, lines, normals, centers, map,bounding_boxes):
         self.lines = lines  #: An ``Nx4`` array with every row representing a line ``[x1, y1, x2, y2]``
         self.normals = normals  #: An ``Nx2`` array with every row representing the normal of a line ``[nx,
         # ny]``
@@ -13,3 +13,7 @@ class Detections:
         # cy]``
 
         self.map = map  #: A binary map of the area from which the line segments were extracted
+
+        self.bounding_boxes = bounding_boxes  #: An ``Nx4`` array with every row representing a bounding box [x_min, y_min, box_width, box_height]
+
+        
