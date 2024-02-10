@@ -298,5 +298,7 @@ class LineDetector(LineDetectorInterface):
         Detects the bounding boxes in the currently set image 
             
         """
+        yolo_c = 'yolo_files\yolov3.cfg'
+        yolo_w = 'yolo_files\yolov3.weights'
         bounding_boxes_output = yolo_api(self.bgr, yolo_w, yolo_c)
         return BoundingBoxes(bounding_boxes=bounding_boxes_output)
