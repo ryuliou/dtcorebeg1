@@ -39,13 +39,7 @@ class LineDetector(LineDetectorInterface):
     """
 
 
-    # ----------------------------------------------------------------
-    # TODO
-    # ----------------------------------------------------------------
-    # 1. Add yolo_w and yolo_c files into config folder
-    # 2. Bounding boxes in detection class in plot node should be used to draw bounding boxes DONE
-    # 3. Figure out how line detector is published and plotted, and do same DONE
-    #  ----------------------------------------------------------------
+
 
 
     def yolo_api(img_input, yolo_w, yolo_c):
@@ -291,6 +285,7 @@ class LineDetector(LineDetectorInterface):
         map, edge_color = self.colorFilter(color_range)
         lines = self.houghLine(edge_color)
         centers, normals = self.findNormal(map, lines)
+
         return Detections(lines=lines, normals=normals, map=map, 
                             centers=centers,bounding_boxes = bounding_boxes_output)
     def detectBoundingBoxes(self):
@@ -302,3 +297,5 @@ class LineDetector(LineDetectorInterface):
         yolo_w = 'yolo_files\yolov3.weights'
         bounding_boxes_output = yolo_api(self.bgr, yolo_w, yolo_c)
         return BoundingBoxes(bounding_boxes=bounding_boxes_output)
+
+        

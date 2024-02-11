@@ -157,7 +157,11 @@ class LineDetectorNode(DTROS):
             color: self.detector.detectLines(ranges) for color, ranges in list(self.color_ranges.items())
         }
 
+
         detections_objects = self.detector.detectBoundingBoxes(self)
+
+        
+
        
 
        

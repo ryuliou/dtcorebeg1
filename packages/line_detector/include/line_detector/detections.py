@@ -14,7 +14,8 @@ class Detections:
 
         self.map = map  #: A binary map of the area from which the line segments were extracted
 
-        self.bounding_boxes = bounding_boxes  
+
+        
 
         
 class BoundingBoxes:
@@ -25,3 +26,7 @@ class BoundingBoxes:
 
     def __init__(self, bounding_boxes):
         self.bounding_boxes = bounding_boxes #: An ``Nx4`` array with every row representing a bounding box [x_min, y_min, box_width, box_height]
+
+        
+
+
