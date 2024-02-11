@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 from line_detector_interface import LineDetectorInterface
-from .detections import Detections
+from .detections import Detections, BoundingBoxes
 
 
 class LineDetector(LineDetectorInterface):
@@ -37,6 +37,7 @@ class LineDetector(LineDetectorInterface):
         hough_max_line_gap (:obj:`int`): Maximum allowed gap between points on the same line to link them, details `here <https://docs.opencv.org/2.4/modules/imgproc/doc/feature_detection.html?highlight=houghlinesp#houghlinesp>`__, default is 1
 
     """
+
 
 
 
@@ -284,5 +285,17 @@ class LineDetector(LineDetectorInterface):
         map, edge_color = self.colorFilter(color_range)
         lines = self.houghLine(edge_color)
         centers, normals = self.findNormal(map, lines)
+
+        return Detections(lines=lines, normals=normals, map=map, 
+                            centers=centers,bounding_boxes = bounding_boxes_output)
+    def detectBoundingBoxes(self):
+        """
+        Detects the bounding boxes in the currently set image 
+            
+        """
+        yolo_c = 'yolo_files\yolov3.cfg'
+        yolo_w = 'yolo_files\yolov3.weights'
         bounding_boxes_output = yolo_api(self.bgr, yolo_w, yolo_c)
-        return Detections(lines=lines, normals=normals, map=map, centers=centers)
+        return BoundingBoxes(bounding_boxes=bounding_boxes_output)
+
+        

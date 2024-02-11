@@ -157,7 +157,11 @@ class LineDetectorNode(DTROS):
             color: self.detector.detectLines(ranges) for color, ranges in list(self.color_ranges.items())
         }
 
-        detections_objects = {bounding_boxes: detections.bounding_boxes for bds in list(detections.items())}
+
+        detections_objects = self.detector.detectBoundingBoxes(self)
+
+        
+
        
 
        
@@ -197,7 +201,7 @@ class LineDetectorNode(DTROS):
         # If there are any subscribers to the debug topics, generate a debug image and publish it
         if self.pub_d_segments.get_num_connections() > 0:
             colorrange_detections = {self.color_ranges[c]: det for c, det in list(detections.items())}
-            debug_img = plotSegments(image, colorrange_detections)
+            debug_img = plotSegments(image, colorrange_detections, detections_objects)
             debug_image_msg = self.bridge.cv2_to_compressed_imgmsg(debug_img)
             debug_image_msg.header = image_msg.header
             self.pub_d_segments.publish(debug_image_msg)
