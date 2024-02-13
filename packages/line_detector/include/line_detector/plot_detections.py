@@ -25,7 +25,6 @@ def plotSegments(image, detections,detections_objects):
     """
 
     im = np.copy(image)
-    im = BoxDrawing(im,detections_objects.bounding_boxes)
     for color_range, det in list(detections.items()):
 
         # convert HSV color to BGR
