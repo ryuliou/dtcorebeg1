@@ -6,7 +6,7 @@
 	<include file="$(find duckietown_demos)/launch/master.launch">
 	    <!-- Basic arguments -->
 		<arg name="veh" value="$(arg veh)"/>
-        <arg name="demo_1" value="$(arg demo_1)"/>
+        <arg name="demo_name" value="$(arg demo_name)"/>
 		<arg name="param_file_name" value="default" />
 		<arg name="visualization" value="true" />
 
