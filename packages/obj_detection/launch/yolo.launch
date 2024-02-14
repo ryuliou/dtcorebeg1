@@ -1,0 +1,12 @@
+<launch>
+	<arg name="node_name" value="obj_detect_node"/>
+	<arg name="veh" doc="Name of vehicle. ex: megaman"/>
+    <arg name="param_file_name" default="default" doc="Specify a param file. ex:megaman"/>
+
+	<group ns="$(arg veh)">
+	    <node pkg="obj_detect_node" type="obj_detect_node.py"  name="obj_detect_node" output="screen" required="true">
+			<param name="~veh" value="$(arg veh)"/>
+		</node>
+	</group>
+
+</launch>
