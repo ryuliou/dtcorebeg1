@@ -127,7 +127,7 @@
     <!--End FSM -->>
 
     <!-- Start DEMO 1 COPY THIS IS OURS / LF, IN-->
-    <group if="$(arg demo_LF)">
+    <group if="$(arg demo_1)">
 
         <!-- Line Detector -->
         <group if="$(arg /lane_following/line_detection)">
