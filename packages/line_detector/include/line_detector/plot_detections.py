@@ -1,8 +1,16 @@
 import cv2
 import numpy as np
 
+def BoxDrawing(image,bounding_boxes):
+    for i,box in bounding_boxes:
+        x_min, y_min = box[i][0], box[i][1]
+        box_width, box_height = box[i][2], box[i][3]
+        colour_box = (255,0,0)
+        cv2.rectangle(image, (x_min, y_min), (x_min + box_width, y_min + box_height), colour_box, 5)
+    return image
 
-def plotSegments(image, detections):
+
+def plotSegments(image, detections,detections_objects):
     """
 
     Draws a set of line segment detections on an image.
@@ -17,7 +25,6 @@ def plotSegments(image, detections):
     """
 
     im = np.copy(image)
-
     for color_range, det in list(detections.items()):
 
         # convert HSV color to BGR

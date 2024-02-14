@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 from line_detector_interface import LineDetectorInterface
-from .detections import Detections
+from .detections import Detections, BoundingBoxes
 
 
 class LineDetector(LineDetectorInterface):
@@ -37,6 +37,77 @@ class LineDetector(LineDetectorInterface):
         hough_max_line_gap (:obj:`int`): Maximum allowed gap between points on the same line to link them, details `here <https://docs.opencv.org/2.4/modules/imgproc/doc/feature_detection.html?highlight=houghlinesp#houghlinesp>`__, default is 1
 
     """
+
+
+
+
+
+    def yolo_api(img_input, yolo_w, yolo_c):
+        network = cv2.dnn.readNetFromDarknet(yolo_c,
+                                        yolo_w)
+        yolo_layers = ['yolo_82', 'yolo_94', 'yolo_106']
+        # ----------------------------------------------------------------
+        # Load YOLO Network
+        # ----------------------------------------------------------------
+        network = cv2.dnn.readNetFromDarknet(yolo_c,yolo_w)
+        yolo_layers = ['yolo_82', 'yolo_94', 'yolo_106']
+        # ----------------------------------------------------------------
+        # Yolo block
+        # ----------------------------------------------------------------
+        image = cv2.imread(img_input)
+        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        # Convert image to blob (4D numpy array [images,channels,width,height])
+        input_blob = cv2.dnn.blobFromImage(image_rgb, 1 / 255.0, (416, 416), swapRB=True, crop=False)
+        network.setInput(input_blob)
+        # Pass through network and start inference timer
+        output = network.forward(yolo_layers)
+        # Define Variables for drawing on image
+        bounding_boxes = []
+        confidences = []
+        classes = []
+        probability_minimum = 0.87
+        threshold = 0.5
+        h, w = image.shape[:2]
+        for result in output:
+            for detection in result:
+                scores = detection[5:]
+                class_current = np.argmax(scores)
+                # Class current is 13 for a stop sign
+                if class_current == 13:
+                    confidence_current = scores[class_current]
+                    if confidence_current > probability_minimum:
+                        box_current = detection[0:4] * np.array([w, h, w, h])
+                        x_center, y_center, box_width, box_height = box_current.astype('int')
+                        x_min = int(x_center - (box_width / 2))
+                        y_min = int(y_center - (box_height / 2))
+                        bounding_boxes.append([x_min, y_min, int(box_width), int(box_height)])
+                        confidences.append(float(confidence_current))
+                        classes.append(class_current)
+
+        # Draw bounding boxes and information on image
+        results = cv2.dnn.NMSBoxes(bounding_boxes, confidences, probability_minimum, threshold)
+        # ----------------------------------------------------------------
+        # Store Yolo detections
+        # ----------------------------------------------------------------
+        bounding_boxes_output = []
+        if len(results) > 0:
+            for i in results.flatten():
+                x_min, y_min = bounding_boxes[i][0], bounding_boxes[i][1]
+                box_width, box_height = bounding_boxes[i][2], bounding_boxes[i][3]
+                bounding_boxes_output.append([x_min, y_min, box_width, box_height])
+        # ----------------------------------------------------------------
+        # Return bounding boxes
+        # ----------------------------------------------------------------
+        return bounding_boxes_output
+    # ----------------------------------------------------------------
+ 
+
+# YOLO API implementation:
+
+# Input: Image
+# Process: Apply YOLO model to image
+# Output: Detections data structure containing bounding boxes, confidences, and classes
+
 
     def __init__(
         self,
@@ -214,4 +285,17 @@ class LineDetector(LineDetectorInterface):
         map, edge_color = self.colorFilter(color_range)
         lines = self.houghLine(edge_color)
         centers, normals = self.findNormal(map, lines)
-        return Detections(lines=lines, normals=normals, map=map, centers=centers)
+
+        return Detections(lines=lines, normals=normals, map=map, 
+                            centers=centers,bounding_boxes = bounding_boxes_output)
+    def detectBoundingBoxes(self):
+        """
+        Detects the bounding boxes in the currently set image 
+            
+        """
+        yolo_c = 'yolo_files\yolov3.cfg'
+        yolo_w = 'yolo_files\yolov3.weights'
+        bounding_boxes_output = yolo_api(self.bgr, yolo_w, yolo_c)
+        return BoundingBoxes(bounding_boxes=bounding_boxes_output)
+
+        
