@@ -29,17 +29,15 @@ class Yolo:
         Returns:
             :obj:`list` of :obj:`list` of :obj:`int`: a list of lists containing the bounding boxes of the detected objects
         """
-        # Load YOLO Network
-        network = cv2.dnn.readNetFromDarknet(self.yolo_c, self.yolo_w)
-        yolo_layers = ['yolo_82', 'yolo_94', 'yolo_106']
+
         # Yolo block
         image = cv2.imread(img_input)
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         # Convert image to blob (4D numpy array [images,channels,width,height])
         input_blob = cv2.dnn.blobFromImage(image_rgb, 1 / 255.0, (416, 416), swapRB=True, crop=False)
-        network.setInput(input_blob)
+        self.network.setInput(input_blob)
         # Pass through network and start inference timer
-        output = network.forward(yolo_layers)
+        output = network.forward(self.yolo_layers)
         # Define Variables for drawing on image
         bounding_boxes = []
         confidences = []
@@ -85,7 +83,7 @@ class Yolo:
             :obj:`list` of :obj:`list` of :obj:`int`: a list of lists containing the bounding boxes of the detected objects
         """
         bounding_boxes = self.detect(img_input)
-        return BoundingBoxes(bounding_boxes=bounding_boxes)
+        return bounding_boxes
     
 
     def drawBoundingBoxes(self, img_input, bounding_boxes):
