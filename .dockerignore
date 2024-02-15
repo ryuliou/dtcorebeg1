@@ -9,6 +9,7 @@
 !launchers
 !scripts
 !fake-opencv-info
-
 # YOUR FILES LISTED BELOW THIS LINE (IMPORTANT: PREPEND !)
 # ----------------------------------------------------------------------------
+!download_yolo_weights.sh
+!entrypoint.sh
